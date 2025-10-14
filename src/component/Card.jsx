@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { postContext } from "../context/ContextAPI";
-import image from "../assets/card_img.jpg"
+import image from "../assets/card_lmg.jpg"
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
