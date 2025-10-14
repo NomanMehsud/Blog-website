@@ -15,7 +15,7 @@ const Cart = () => {
   }
   const handleClear = ()=>{
       dispatch(clearCart())
-    toast.success('removed all the post from cart')
+    toast.success('removed all the post from favourite')
  
 
   }

@@ -22,7 +22,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center">
         <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-          <a className="transition-colors hover:text-sky-600" href="#">
+          <a  className="transition-colors hover:text-sky-600" href="#">
             Home
           </a>
           <a className="transition-colors hover:text-sky-600" href="#">

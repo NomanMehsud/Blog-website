@@ -2,15 +2,21 @@ import React, { useContext, useState } from "react";
 import Card from "../component/Card";
 import { postContext } from "../context/ContextAPI";
 import AddPostModal from "../component/AddPostModel";
-import loading from '../assets/loading.json'
+import notfound from '../assets/notfound.json'
 import Lottie from "lottie-react";
 import HeroSection from "../component/HeroSection";
 import { toast } from "react-toastify";
+import Contact from "../component/Contact";
+import About from "../component/About";
 
 const Home = () => {
-  const { posts, addPost } = useContext(postContext);
+  const { posts, addPost, searchItem } = useContext(postContext);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPost, setNewPost] = useState({ title: "", body: "" });
+
+  const filterPosts = posts.filter( (post)=>
+    post.title.toLowerCase().includes(searchItem.toLowerCase())
+  )
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,15 +54,15 @@ const Home = () => {
         Add New Post
       </button>
       </div>
-
-      <div >
-        {posts && posts.length > 0 ? (
+      
+      <div>
+        {filterPosts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">{
-          posts.map((post) => <Card key={post.id}  post={post} />)
+          filterPosts.map((post) => <Card key={post.id}  post={post} />)
 }</div>
         ) : (
           <div className="flex items-center justify-center h-screen w-[100%] bg-white ">
-      <Lottie animationData={loading} className="" />
+      <Lottie animationData={notfound} className="" />
     </div>
         )}
         {showAddModal && (
@@ -69,7 +75,10 @@ const Home = () => {
           />
         )}
       </div>
+      <Contact/>
+      
     </div>
+    <About/>
     </div>
     </div>
   );

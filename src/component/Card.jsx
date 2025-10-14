@@ -3,19 +3,16 @@ import { postContext } from "../context/ContextAPI";
 import image from "../assets/card_img.jpg"
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "../features/cartSlice";
 
 const Card = ({ post }) => {
     const {deletepost } = useContext(postContext);
     const dispatch = useDispatch()
-    // const {addToCart} = useContext(CartContext)
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  // const [formData, setFormData] = useState({
-  //   title: post.title,
-  //   body: post.body,
-  // });
+    const cartItems = useSelector( (state)=> state.cart.items)
+
+    const isAdded = cartItems.some( (item)=> item.id === post.id)
+
 
   const navigate = useNavigate()
 
@@ -26,29 +23,17 @@ const Card = ({ post }) => {
 
   const handleAddToCart = () => {
     // addToCart(post);
-    dispatch(addToCart(post))
+    if(!isAdded){
+      dispatch(addToCart(post))
     toast.success("Item added successfully")
-
+    } else{
+      dispatch(removeFromCart(post.id))
+          toast.error("Item removed from favourite")
+    } 
+    
   };
 
 
-
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-
-  // };
-  // const handleCancel = () => {
-  //   // setIsModalOpen(false);
-  //   navigate('/')
-  // }
-
-  // const handleSave = () => {
-  //   updatePost(post.id, formData);
-  //   // setIsModalOpen(false);
-  //   navigate('/')
-  // };
 
   const handleDelete = () =>{
     const confirm = window.confirm("Are you sure you want to delete this post?");
@@ -71,7 +56,9 @@ const Card = ({ post }) => {
   </div>
 
   <div className="flex flex-col gap-2 p-3 rounded-b-xl mt-auto">
-      <button onClick={handleAddToCart} className="w-full text-center py-2 px-4 rounded-lg bg-sky-600 text-white font-semibold transition-transform duration-300 ease-in-out group-hover:scale-105 cursor-pointer">Add to Favorite</button>
+      <button onClick={handleAddToCart} className={`px-4 py-2 rounded text-white ${
+            isAdded ? "bg-green-500 " : "bg-sky-500 hover:bg-sky-600"
+          }`}>{isAdded? 'Added to favourite' : 'Add to favorite'}</button>
       <div className="flex gap-2">
         <button onClick={handleEdit} className="w-full text-center py-2 px-4 rounded-lg bg-sky-600/30 text-sky-600 font-semibold hover:bg-sky-600/40 transition-colors cursor-pointer">Edit</button>
         <button onClick={handleDelete} className="w-full text-center py-2 px-4 rounded-lg bg-red-500/20 text-red-500 font-semibold hover:bg-red-500/30 transition-colors cursor-pointer">Delete</button>

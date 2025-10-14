@@ -5,10 +5,11 @@ export const postContext = createContext()
 
 const ContextAPI = ({children}) => {
     const [posts, setPosts] = useState([])
+    const [searchItem, setSearchItem]  = useState("")
     const fetchPost = async ()=>{
         try {
             const res = await axios.get('https://jsonplaceholder.typicode.com/posts')
-            setPosts(res.data)
+            setPosts(res.data.slice(0,20))
             console.log(res.data)
         } catch (error) {
             console.log(error.message)
@@ -62,7 +63,7 @@ const ContextAPI = ({children}) => {
 };
 
   return (
-    <postContext.Provider value={{posts, updatePost,deletepost,addPost}}>
+    <postContext.Provider value={{posts, updatePost,deletepost,addPost,searchItem, setSearchItem}}>
         {children}
     </postContext.Provider>
   )
