@@ -49,7 +49,7 @@ const Home = () => {
       <h3 className="text-2xl font-bold">Latest Post</h3>
       <button
         onClick={() => setShowAddModal(true)}
-        className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-green-600 mb-1"
+        className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-green-600 mb-1 cursor-pointer"
       >
         Add New Post
       </button>

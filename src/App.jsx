@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import EditModal from "./component/EditModel";
 import { ToastContainer } from "react-toastify";
 import Cart from "./component/Cart";
+import ReadMore from "./page/ReadMore";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element = {<Home />}/>
         <Route path="/editmodel/:id" element = {<EditModal/>}/>
         <Route path="/cart" element = {<Cart/>}/>
+        <Route path="/readmore/:id" element = {<ReadMore/>}/>
       </Routes>
 
     </>

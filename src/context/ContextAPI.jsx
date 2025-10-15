@@ -26,7 +26,7 @@ const ContextAPI = ({children}) => {
 
             setPosts( (prev)=>
                 prev.map( (post)=>
-                post.id === id ? {...post, ...res.data} : post
+                post.id === id ? {...res.data,...post} : post
                 )
             )
         } catch (error) {
