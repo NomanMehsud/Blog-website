@@ -1,51 +1,47 @@
 // src/components/EditModal.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { postContext } from "../context/ContextAPI";
 import { toast } from "react-toastify";
+import { useGetPostsQuery, useUpdatePostMutation } from "../features/apiSlice";
 
 const EditModal = () => {
-  const {id} = useParams()
-  const { updatePost,posts } = useContext(postContext);
-  const navigate = useNavigate()
-  
-    const [formData, setFormData] = useState({
-    title: "",
-    body: "",
-  });
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [updatePost] = useUpdatePostMutation();
+  const { data: post = [], isLoading } = useGetPostsQuery();
 
-  useEffect(() => {
-    const numericId = Number(id);
-    const foundPost = posts.find((p) => p.id === numericId);
-    if (foundPost) {
-      setFormData({
-        title: foundPost.title,
-        body: foundPost.body,
-      });
-    }
-  }, [id, posts]);
-  
+  const existingPost = post.find((p) => p.id === Number(id));
+
+  const [formData, setFormData] = useState({
+    title: existingPost.title || "",
+    body: existingPost.body || "",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
   };
-  const handleCancel = () => {
-    // setIsModalOpen(false);
-    navigate('/')
-  }
 
-  const handleSave = () => {
-    
+  const handleSave = async () => {
     if (formData.title.trim() === "" || formData.body.trim() === "") {
       alert("⚠️ Please fill out all fields before saving!");
-      return}; // stop saving
-      updatePost(Number(id), formData);
-    navigate('/')
-     toast.success("Post saved successfully!");
+      return;
+    }
+
+    try {
+      const savedata = await updatePost({ id, ...formData }).unwrap();
+      console.log(savedata)
+      toast.success("Post updated successfully!");
+      navigate("/");
+    } catch (error) {
+      toast.error("Failed to update post!");
+      console.error(error);
+    }
   };
 
+  const handleCancel = () => {
+    navigate("/");
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center">
@@ -92,13 +88,12 @@ const EditModal = () => {
 
 export default EditModal;
 
-
-
-
-{/* <EditModal
+{
+  /* <EditModal
           title={formData.title}
           body={formData.body}
           onChange={handleChange}
           onSave={handleSave}
           onCancel={handleCancel}
-        /> */}
+        /> */
+}

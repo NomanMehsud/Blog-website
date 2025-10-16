@@ -1,5 +1,3 @@
-import React, { useContext, useState } from "react";
-import { postContext } from "../context/ContextAPI";
 import image from "../assets/card_lmg.jpg"
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,9 +6,11 @@ import { addToCart, removeFromCart } from "../features/cartSlice";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { MdOutlineEdit } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeletePostMutation, useGetPostsQuery } from "../features/apiSlice";
 
 const Card = ({ post }) => {
-    const {deletepost } = useContext(postContext);
+const { data: posts = [], refetch } = useGetPostsQuery();
+  const [deletePost, { isLoading: deleting }] = useDeletePostMutation();
     const dispatch = useDispatch()
     const cartItems = useSelector( (state)=> state.cart.items)
 
@@ -37,15 +37,21 @@ const Card = ({ post }) => {
     } 
     
   };
-  const handleDelete = () =>{
-    const confirm = window.confirm("Are you sure you want to delete this post?");
-  if (confirm) {
-    deletepost(post.id); // your delete function
-    toast.success("Post deleted successfully!");
-  } else {
-    toast.info("Delete canceled!");
-  }
-  }
+   const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+
+    try {
+       const deldata = await deletePost(post.id).unwrap();
+      //  setPosts((prev) => prev.filter((p) => p.id !== post.id));
+      console.log(deldata)
+      toast.success("🗑️ Post deleted successfully!");
+      refetch();
+    } catch (error) {
+      toast.error("❌ Failed to delete post!");
+      console.error(error);
+    }
+  };
 
   return (
     <div >
@@ -61,9 +67,6 @@ const Card = ({ post }) => {
   </div>
 
   <div className="flex gap-2 p-3 rounded-b-xl mt-auto">
-      {/* <button onClick={handleAddToCart} className={`px-4 py-2 rounded text-white cursor-pointer ${
-            isAdded ? "bg-green-500 " : "bg-sky-500 hover:bg-sky-600"
-          }`}>{isAdded? 'Added to favourite' : 'Add to favorite'}</button> */}
         <button onClick={handleEdit} className="relative w-full text-center py-2 px-4 rounded-lg bg-sky-600/30 text-sky-600 font-semibold hover:bg-sky-600/40 transition-colors cursor-pointer"><span className="absolute left-10 top-3">{<MdOutlineEdit />}</span>Edit</button>
         <button onClick={handleDelete} className="relative w-full text-center py-2 px-4 rounded-lg bg-red-500/20 text-red-500 font-semibold hover:bg-red-500/30 transition-colors cursor-pointer"><span className="absolute left-8 top-3">{<RiDeleteBin6Line />}</span>Delete</button>
   </div>

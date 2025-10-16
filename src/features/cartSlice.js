@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 const cartSlice = createSlice({
     name : 'cart',
-    initialState : { items : [],},
+    initialState : { items : []},
     reducers : {
         addToCart : (state, action) =>{
             const item = action.payload
@@ -13,8 +13,13 @@ const cartSlice = createSlice({
                 toast.warning("Already in favourites!");
                 return
             }
-            state.items.push(item);
-
+           return{
+            ...state,
+            items:[
+                ...state.items,item
+            ]
+            
+           }
         },
         removeFromCart : (state, action) =>{
             state.items = state.items.filter( (i) => i.id !== action.payload)
